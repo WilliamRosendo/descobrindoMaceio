@@ -1,50 +1,49 @@
-# Welcome to your Expo app 👋
+# 🌴 Descobrindo Maceió
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicação web explorar os melhores destinos turísticos de Maceió, construída com React, Vite e Tailwind CSS.
 
-## Get started
+## Tecnologias
 
-1. Install dependencies
+- **React 18** - Biblioteca JavaScript para interfaces
+- **Vite** - Build tool super rápido
+- **Tailwind CSS** - Framework CSS utility-first
+- **Lucide React** - Ícones modernos
+- **LocalStorage** - Persistência de favoritos
 
-   ```bash
-   npm install
-   ```
+## Instalação e Configuração
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Passo 1: Criar o projeto
 
 ```bash
-npm run reset-project
+# Criar projeto com Vite
+npm create vite@latest descobrindo-maceio -- --template react
+
+# Entrar na pasta
+cd descobrindo-maceio
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Passo 2: Instalar dependências
 
-## Learn more
+```bash
+# Instalar dependências base
+npm install
 
-To learn more about developing your project with Expo, look at the following resources:
+# Instalar Tailwind CSS
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+# Instalar Lucide Icons
+npm install lucide-react
+```
 
-## Join the community
+## Páginas
 
-Join our community of developers creating universal apps.
+1. **Home** - Lista de destinos por categoria
+2. **Favoritos** - Destinos salvos pelo usuário
+3. **Mapa** - Visualização geográfica (placeholder)
+4. **Perfil** - Informações do usuário
+5. **Detalhes** - Informações completas do destino
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+Desenvolvido com ❤️ e ☕ em Maceió
