@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true, // garante que não haverá emails repetidos
+    unique: true,
     lowercase: true
   },
   senha: {

@@ -14,7 +14,7 @@ const lugarSchema = new mongoose.Schema({
     required: true,
   },
   fotos: {
-    type: [String], // array de URLs
+    type: [String],
     validate: {
       validator: (v) => Array.isArray(v) && v.length > 0,
       message: "Deve haver pelo menos uma foto."
@@ -42,7 +42,7 @@ const lugarSchema = new mongoose.Schema({
   }
 });
 
-// Cria índice geoespacial (importante para buscas por localização)
+// índice geoespacial
 lugarSchema.index({ localizacao: "2dsphere" });
 
 export default mongoose.model("Lugar", lugarSchema, "lugares");
