@@ -3,10 +3,9 @@ import { api } from "../../services/api";
 import DestinationCard from "../common/DestinosCard";
 
 export default function HomePage() {
-  const [destinos, setDestinos] = useState([]);
+  const [destination, setDestinos] = useState([]);
   const [categorias, setCategorias] = useState([]);
 
-  // Buscar destinos do backend
   useEffect(() => {
     async function fetchData() {
       try {
@@ -36,7 +35,7 @@ export default function HomePage() {
       <div className="flex gap-3 overflow-x-auto pb-4">
         {categorias.map((cat) => (
           <button
-            key={cat.id}
+            key={cat._id}
             className="px-4 py-2 bg-blue-500 text-white rounded-full whitespace-nowrap hover:bg-blue-600"
           >
             {cat.nome}
@@ -44,12 +43,12 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Cards dos pontos turísticos */}
+
       <h2 className="text-xl font-semibold mt-6 mb-3">Locais em destaque</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {destinos.map((destino) => (
-          <DestinationCard key={destino.id} destino={destino} />
+        {destination.map((destination) => (
+          <DestinationCard key={destination._id} destination={destination} />
         ))}
       </div>
     </div>
