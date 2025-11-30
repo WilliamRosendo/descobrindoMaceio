@@ -1,6 +1,6 @@
 import "./App.css"; 
 import Header from "./components/layout/Header";
-import HomePage from "./components/pages/HomePage";
+import HomePage from "./pages/HomePage";
 import { AppProvider } from "./context/AppContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 

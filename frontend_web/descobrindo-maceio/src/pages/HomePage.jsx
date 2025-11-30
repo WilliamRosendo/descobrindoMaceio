@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { api } from "../../services/api";
-import DestinationCard from "../common/DestinosCard";
+import { api } from "../services/api";
+import DestinationCard from "../components/common/DestinosCard";
 
 export default function HomePage() {
   const [destination, setDestinos] = useState([]);

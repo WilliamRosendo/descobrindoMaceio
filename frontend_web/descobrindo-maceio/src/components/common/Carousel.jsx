@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import DestinationCard from "../common/DestinosCard";
+import DestinationCard from './DestinosCard';
 
 const Carousel = ({ items, onItemClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
