@@ -29,11 +29,17 @@ cd descobrindo-maceio
 npm install
 
 # Instalar Tailwind CSS
-npm install -D tailwindcss postcss autoprefixer
+npm install tailwindcss@4.1.17
 npx tailwindcss init -p
 
 # Instalar Lucide Icons
 npm install lucide-react
+```
+
+### Passo 3: Rodar o projeto
+
+```bash
+npm run dev
 ```
 
 ## Páginas
