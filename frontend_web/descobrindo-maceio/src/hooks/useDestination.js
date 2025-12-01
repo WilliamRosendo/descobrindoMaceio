@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getDestinations } from '../services/destination.service';
+import { getLocais } from '../services/destination.service';
 
 export const useDestinations = () => {
   const [destinations, setDestinations] = useState({
@@ -14,8 +14,15 @@ export const useDestinations = () => {
     const fetchDestinations = async () => {
       try {
         setLoading(true);
-        const data = await getDestinations();
-        setDestinations(data);
+
+        const data = await getLocais();
+
+        const praias = data.filter(item => item.categoria === "praias");
+        const cultura = data.filter(item => item.categoria === "cultura" || item.categoria === "culturais");
+        const lazer = data.filter(item => item.categoria === "lazer");
+
+        setDestinations({ praias, cultura, lazer });
+
       } catch (err) {
         setError(err.message);
       } finally {

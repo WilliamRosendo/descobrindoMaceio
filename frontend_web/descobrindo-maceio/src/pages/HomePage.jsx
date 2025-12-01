@@ -1,56 +1,64 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { api } from "../services/api";
+import { getCategorias, getLugaresByCategoria } from "../services/destination.service";
 import DestinationCard from "../components/common/DestinosCard";
 
 export default function HomePage() {
-  const [destination, setDestinos] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [lugaresPorCategoria, setLugaresPorCategoria] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
+    const carregarDados = async () => {
       try {
-        const destinosRes = await api.get("/api/lugares");
-        const categoriasRes = await api.get("/api/categorias");
+        const cats = await getCategorias();
+        setCategorias(cats);
 
-        setDestinos(destinosRes.data);
-        setCategorias(categoriasRes.data);
+        const result = {};
 
-      } catch (err) {
-        console.error("Erro ao carregar dados", err);
+        for (const categoria of cats) {
+          try {
+            const lugares = await getLugaresByCategoria(categoria._id);
+            // Garante que seja sempre um array
+            result[categoria._id] = Array.isArray(lugares) ? lugares : [];
+          } catch (err) {
+            result[categoria._id] = [];
+            console.error("Erro carregando categoria:", categoria.nome_categoria);
+          }
+        }
+
+        setLugaresPorCategoria(result);
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData();
+    carregarDados();
   }, []);
 
+  if (loading) return <p className="text-center mt-8">Carregando...</p>;
+
   return (
-    <div className="pt-24 max-w-6xl mx-auto px-4">
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Categorias</h1>
 
-      {/* Título */}
-      <h1 className="text-2xl font-semibold mb-4">
-        Explore Maceió 🌴
-      </h1>
+      {categorias.map((cat) => (
+        <div key={cat._id} className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">{cat.nome_categoria}</h2>
 
-      {/* Categorias */}
-      <div className="flex gap-3 overflow-x-auto pb-4">
-        {categorias.map((cat) => (
-          <button
-            key={cat._id}
-            className="px-4 py-2 bg-blue-500 text-white rounded-full whitespace-nowrap hover:bg-blue-600"
-          >
-            {cat.nome}
-          </button>
-        ))}
-      </div>
-
-
-      <h2 className="text-xl font-semibold mt-6 mb-3">Locais em destaque</h2>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {destination.map((destination) => (
-          <DestinationCard key={destination._id} destination={destination} />
-        ))}
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {(lugaresPorCategoria[cat._id] || []).length > 0 ? (
+              lugaresPorCategoria[cat._id]
+                .filter(Boolean) // remove possíveis undefined
+                .map((lugar) => <DestinationCard key={lugar._id} destino={lugar} />)
+            ) : (
+              <p className="text-gray-500">Nenhum lugar encontrado.</p>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

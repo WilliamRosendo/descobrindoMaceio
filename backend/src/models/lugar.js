@@ -10,7 +10,8 @@ const lugarSchema = new mongoose.Schema({
     required: true,
   },
   categoria: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Categoria",
     required: true,
   },
   fotos: {
