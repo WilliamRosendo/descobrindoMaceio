@@ -19,7 +19,6 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-3 cursor-pointer">
             <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg text-2xl">
               🌴
@@ -30,7 +29,6 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map(({ to, label, icon: Icon }) => (
               <Link
@@ -44,7 +42,6 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Mobile Menu */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 transition"
@@ -53,7 +50,6 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {menuOpen && (
           <nav className="md:hidden mt-4 pb-4 space-y-2 border-t pt-4">
             {navItems.map(({ to, label, icon: Icon }) => (

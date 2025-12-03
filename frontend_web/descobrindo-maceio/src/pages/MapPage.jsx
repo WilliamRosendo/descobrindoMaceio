@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import MapContainer from "../components/map/MapaContainer";
 import CategoryTabs from "../components/map/CategoryTabs";
 import { getAllPlaces } from "../services/place.service";
@@ -8,15 +8,14 @@ import "../styles/map.css";
 
 const MapPage = () => {
   const [places, setPlaces] = useState([]);
-  const [filteredPlaces, setFilteredPlaces] = useState([]);
   const [category, setCategory] = useState("praia");
   const [userLocation, setUserLocation] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const categoryMap = {
-    praia: "praia",
-    cultura: "cultura",
-    lazer: "lazer",
+    praia: "Praias",
+    cultura: "Passeios Culturais",
+    lazer: "Lazer",
   };
 
   useEffect(() => {
@@ -24,27 +23,18 @@ const MapPage = () => {
       try {
         const response = await getAllPlaces();
         setPlaces(response);
-
-        setFilteredPlaces(
-          response.filter((p) => p.nome_categoria === categoryMap[category])
-        );
       } catch (err) {
         console.error("Erro ao buscar lugares:", err);
       }
     };
-
     fetchPlaces();
   }, []);
 
-  // 2) Solicitar localização do usuário
   useEffect(() => {
     if (!navigator.geolocation) {
-    console.warn("Geolocalização não suportada");
-
-    // Coloque o setState dentro de um microtask assíncrono
-    Promise.resolve().then(() => setLoading(false));
-
-    return;
+      console.warn("Geolocalização não suportada");
+      Promise.resolve().then(() => setLoading(false));
+      return;
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -63,66 +53,54 @@ const MapPage = () => {
     );
   }, []);
 
-  // 3) Quando mudar a categoria → filtra lista
+  const placesWithDistance = useMemo(() => {
+    if (!userLocation) return places.map(p => ({ ...p, distanceKm: null, tempoMin: null }));
+
+    return places.map((place) => {
+      const distanciaKm = calcularDistanciaKm(
+        userLocation,
+        place.localizacao.coordinates
+      );
+      const tempoMin = calcularTempo(distanciaKm);
+      return { ...place, distanceKm: distanciaKm, tempoMin };
+    });
+  }, [places, userLocation]);
+
+  const filteredPlaces = placesWithDistance.filter(
+    (p) => p.categoria.nome_categoria === categoryMap[category]
+  );
+
   const handleCategoryChange = (cat) => {
     setCategory(cat);
-    setFilteredPlaces(
-      places.filter((p) => p.nome_categoria === categoryMap[cat])
-    );
   };
-
-  // 4) Enriquecer locais com distância e tempo usando seu distance.service
-  const placesWithDistance = filteredPlaces.map((place) => {
-    if (!userLocation) return { ...place, distanceKm: null, tempoMin: null };
-
-    const distanciaKm = calcularDistanciaKm(
-      { lat: userLocation.lat, lng: userLocation.lng },
-      place.localizacao.coordinates
-    );
-
-    const tempoMin = calcularTempo(distanciaKm);
-
-    return {
-      ...place,
-      distanceKm: distanciaKm,
-      tempoMin: tempoMin,
-    };
-  });
 
   return (
     <div className="map-page">
-      {/* Título como na imagem */}
       <h1 className="map-title">Mapa</h1>
 
-      {/* Tabs: Praia / Cultura / Lazer */}
-      <CategoryTabs
-        selected={category}
-        onSelect={handleCategoryChange}
-      />
+      <CategoryTabs selected={category} onSelect={handleCategoryChange} />
 
-      {/* Mapa */}
       <MapContainer
-        places={placesWithDistance}
+        places={filteredPlaces}
         userLocation={userLocation}
         loading={loading}
       />
 
-      {/* Lista de Cards de Distância */}
-        <div className="places-list">
-        {placesWithDistance.map((place) => (
-            <div key={place._id} className="place-card">
+      <div className="places-list">
+        {filteredPlaces.map((place) => (
+          <div key={place._id} className="place-card">
             <h3 className="place-card-title">{place.nome_local}</h3>
 
             <p className="place-card-info place-card-distance">
-                Distância: {place.distanceKm?.toFixed(2)} km
+              Distância: {place.distanceKm?.toFixed(2)} km
             </p>
 
             <p className="place-card-info place-card-time">
-                Tempo estimado: {place.tempoMin} min
+              Tempo estimado: {place.tempoMin} min
             </p>
-            </div>
+          </div>
         ))}
-        </div>
+      </div>
     </div>
   );
 };

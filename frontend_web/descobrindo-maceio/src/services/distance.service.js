@@ -5,11 +5,11 @@ export const calcularDistanciaKm = (userCoords, lugarCoords) => {
     { latitude: userCoords.lat, longitude: userCoords.lng },
     { latitude: lugarCoords[1], longitude: lugarCoords[0] }
   );
-  return (metros / 1000).toFixed(2);
+  return Number((metros / 1000).toFixed(2));
 };
 
 export const calcularTempo = (distanciaKm) => {
-  const velocidadeMedia = 40; // km/h
+  const velocidadeMedia = 40;
   const horas = distanciaKm / velocidadeMedia;
-  return Math.round(horas * 60); // minutos
+  return Math.round(horas * 60);
 };
