@@ -10,8 +10,6 @@ export const getTideInfo = async (req, res) => {
 
     const url = `https://tabuamare.devtu.qzz.io/api/v1/geo-tabua-mare/[${lat},${lon}]/${estado}/${mesAtual}/[${diaAtual}]`;
 
-    console.log("🔵 Chamando:", url);
-
     const response = await axios.get(url, {
       headers: {
         "User-Agent": "Mozilla/5.0",

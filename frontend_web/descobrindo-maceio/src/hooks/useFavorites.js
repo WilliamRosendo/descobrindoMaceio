@@ -1,27 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useContext } from 'react';
+import AppContext from '../context/AppContext';
 
 export const useFavorites = () => {
-  const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem("favorites");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const context = useContext(AppContext);
 
-  useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites]);
+  if (!context) {
+    throw new Error('useFavorites deve ser usado dentro de um AppProvider');
+  }
 
-  const toggleFavorite = (id) => {
-    setFavorites(prev => {
-      const newFavorites = prev.includes(id) 
-        ? prev.filter(f => f !== id) 
-        : [...prev, id];
-      
-      localStorage.setItem('favorites', JSON.stringify(newFavorites));
-      return newFavorites;
-    });
+  const { favorites, toggleFavorite, isFavorite, user } = context;
+
+  const isAuthenticated = () => !!user;
+
+  return {
+    favorites,
+    toggleFavorite,
+    isFavorite,
+    isAuthenticated,
   };
-
-  const isFavorite = (id) => favorites.includes(id);
-
-  return { favorites, toggleFavorite, isFavorite };
 };

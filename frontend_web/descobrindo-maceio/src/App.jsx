@@ -12,27 +12,22 @@ import RegisterPage from "./pages/RegisterPage";
 
 export default function App() {
   return (
-    <AppProvider>
-        <BrowserRouter>
-          <Header />
+    <BrowserRouter>
+      <AppProvider>
+        <Header />
 
-          <div className="app-container">
-            <Routes>
-
-              <Route path="/" element={<HomePage />} />
-
-              <Route path="/detalhes/:id" element={<DetailsPage />} />
-
-              <Route path="/favoritos" element={<FavoritesPage />} />
-              
-              <Route path="/mapa" element={<MapPage />} />
- 
-              <Route path="/perfil" element={<ProfilePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/cadastro" element={<RegisterPage />} />
-            </Routes>
-          </div>
-      </BrowserRouter>
-    </AppProvider>
+        <div className="app-container">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/detalhes/:id" element={<DetailsPage />} />
+            <Route path="/favoritos" element={<FavoritesPage />} />
+            <Route path="/mapa" element={<MapPage />} />
+            <Route path="/perfil" element={<ProfilePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/cadastro" element={<RegisterPage />} />
+          </Routes>
+        </div>
+      </AppProvider>
+    </BrowserRouter>
   );
 }

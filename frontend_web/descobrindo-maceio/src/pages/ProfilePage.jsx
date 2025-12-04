@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, LogOut, Trash2, Save, AlertCircle, CheckCircle } from 'lucide-react';
 import { authService } from '../services/auth.service';
 import "../styles/profile.css";
+import AppContext from '../context/AppContext';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, setUser,logout } = useContext(AppContext);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
@@ -105,7 +106,7 @@ const ProfilePage = () => {
     setLoading(true);
     try {
       await authService.deleteUser(user.id);
-      authService.logout();
+      logout();
       navigate('/');
     } catch (err) {
       setError(err.error || 'Erro ao deletar conta');
@@ -116,7 +117,7 @@ const ProfilePage = () => {
   };
 
   const handleLogout = () => {
-    authService.logout();
+    logout();
     navigate('/login');
   };
 

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { authService } from '../services/auth.service';
 import "../styles/login.css";
+
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // ← ADICIONADO
   const [formData, setFormData] = useState({
     email: '',
     senha: '',
@@ -12,6 +14,13 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // ← ADICIONADO: Mostrar mensagem se veio de redirecionamento
+  useEffect(() => {
+    if (location.state?.message) {
+      setError(location.state.message);
+    }
+  }, [location]);
 
   const handleChange = (e) => {
     setFormData({
@@ -34,7 +43,15 @@ const LoginPage = () => {
 
     try {
       await authService.login(formData.email, formData.senha);
-      navigate('/');
+      
+      // ← ADICIONADO: Redirecionar para página anterior se existir
+      const redirectUrl = localStorage.getItem('redirectAfterLogin');
+      if (redirectUrl) {
+        localStorage.removeItem('redirectAfterLogin');
+        navigate(redirectUrl);
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.error || 'Erro ao fazer login. Verifique suas credenciais.');
     } finally {

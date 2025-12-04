@@ -1,7 +1,7 @@
 .home-page {
   min-height: 100vh;
   background: linear-gradient(to bottom right, #f9fafb, rgba(239, 246, 255, 0.2), #f9fafb);
-  padding-top: 80px;
+  padding-top: 15px;
 }
 
 .loading-container {

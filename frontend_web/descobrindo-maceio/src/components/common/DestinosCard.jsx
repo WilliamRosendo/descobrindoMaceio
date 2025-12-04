@@ -1,61 +1,60 @@
-import React from 'react';
-import { Heart, MapPin, ArrowRight } from 'lucide-react';
-import { useApp } from '../../hooks/useApp';
-import { useNavigate } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Heart, ArrowRight } from 'lucide-react';
+import AppContext from '../../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 import './DestinosCard.css';
 
-const DestinationCard = ({ destino }) => {
+export default function DestinosCard({ destino, onClick }) {
+  const { toggleFavorite, isFavorite } = useContext(AppContext);
   const navigate = useNavigate();
-  const { favorites, toggleFavorite } = useApp();
-  const isFavorite = favorites.includes(destino._id);
-  
-  if (!destino) return null;
+  const favorite = isFavorite(destino);
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    toggleFavorite(destino);
+  };
+
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick(destino);
+    } else {
+      navigate(`/detalhes/${destino._id}`);
+    }
+  };
 
   return (
-    <div className="destination-card">
-
-      <div 
-        className="destination-image-wrapper"
-        onClick={() => navigate(`/detalhes/${destino._id}`)}
-      >
+    <div className="destination-card" onClick={handleCardClick}>
+      <div className="destination-image-wrapper">
         <img
-          src={destino.fotos}
-          alt={destino.nome_local}
+          src={destino.imagem || destino.imagens?.[0] || '/placeholder-image.jpg'}
+          alt={destino.nome_local || destino.nome}
           className="destination-image"
         />
+
         <div className="image-overlay"></div>
-        
+
         <div className="hover-overlay">
           <div className="view-details-btn">
             <span>Ver Detalhes</span>
             <ArrowRight size={18} />
           </div>
         </div>
+
+        <button
+          className="favorite-btn"
+          onClick={handleFavoriteClick}
+          aria-label={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+        >
+          <Heart
+            size={20}
+            className={favorite ? 'favorite-active' : 'favorite-inactive'}
+          />
+        </button>
       </div>
 
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleFavorite(destino._id);
-        }}
-        className="favorite-btn"
-        aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-      >
-        <Heart
-          size={20}
-          className={isFavorite ? 'favorite-active' : 'favorite-inactive'}
-        />
-      </button>
-
       <div className="destination-content">
-        <h3 className="destination-title">{destino.nome}</h3>
-        <div className="destination-location">
-          <MapPin size={16} />
-          <span>{destino.nome_local}</span>
-        </div>
+        <h3 className="destination-title">{destino.nome_local || destino.nome}</h3>
       </div>
     </div>
   );
-};
-
-export default DestinationCard;
+}
