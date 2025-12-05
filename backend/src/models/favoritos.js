@@ -11,16 +11,22 @@ const FavoritosSchema = new mongoose.Schema(
 
     categorias: {
       Praias: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Lugar",
         default: [],
+        required: true,
       },
       "Passeios Culturais": {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Lugar",
         default: [],
+        required: true,
       },
       Lazer: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Lugar",
         default: [],
+        required: true,
       },
     },
   },

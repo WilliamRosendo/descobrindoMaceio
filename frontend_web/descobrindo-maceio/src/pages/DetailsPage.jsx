@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getLocalById } from "../services/locais.service";
-import { Heart, ArrowLeft, MapPin, Clock, Phone, ChevronRight } from "lucide-react";
+import { Heart, ArrowLeft, MapPin, Clock, Phone, ChevronRight, ChevronLeft } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import AppContext from "../context/AppContext";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "../styles/details.css";
-
 
 const defaultIcon = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
@@ -18,10 +18,11 @@ L.Marker.prototype.options.icon = defaultIcon;
 const DetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toggleFavorite, isFavorite } = useContext(AppContext);
 
   const [local, setLocal] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
   useEffect(() => {
     const carregar = async () => {
@@ -61,10 +62,25 @@ const DetailsPage = () => {
   const latitude = local?.localizacao?.coordinates?.[1];
   const longitude = local?.localizacao?.coordinates?.[0];
   const hasCoords = latitude !== undefined && longitude !== undefined && !isNaN(latitude) && !isNaN(longitude);
+  const allPhotos = local.fotos || [];
   const carouselImages = local.fotos?.slice(1) || [];
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  const favorite = isFavorite(local);
+
+  const handleFavoriteClick = () => {
+    toggleFavorite(local);
+  };
+
+  const nextPhoto = () => {
+    setCurrentPhotoIndex((prev) => 
+      prev === allPhotos.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const prevPhoto = () => {
+    setCurrentPhotoIndex((prev) => 
+      prev === 0 ? allPhotos.length - 1 : prev - 1
+    );
   };
 
   return (
@@ -72,25 +88,59 @@ const DetailsPage = () => {
  
       <div className="hero-image-container">
         <img
-          src={local.fotos?.[0]}
-          alt={local.nome_lugar}
+          src={allPhotos[currentPhotoIndex]}
+          alt={`${local.nome_lugar} - foto ${currentPhotoIndex + 1}`}
           className="hero-image"
         />
         
-
         <div className="hero-overlay"></div>
-
 
         <button onClick={() => navigate(-1)} className="floating-btn back-button">
           <ArrowLeft size={20} />
         </button>
 
-        <button onClick={toggleFavorite} className="floating-btn favorite-button">
+        <button 
+          onClick={handleFavoriteClick} 
+          className="floating-btn favorite-button"
+          aria-label={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+        >
           <Heart 
             size={20}
-            className={isFavorite ? 'filled' : ''}
+            className={favorite ? 'filled' : ''}
+            fill={favorite ? 'currentColor' : 'none'}
           />
         </button>
+
+        {allPhotos.length > 1 && (
+          <>
+            <button 
+              onClick={prevPhoto} 
+              className="carousel-nav-btn carousel-nav-prev"
+              aria-label="Foto anterior"
+            >
+              <ChevronLeft size={28} />
+            </button>
+
+            <button 
+              onClick={nextPhoto} 
+              className="carousel-nav-btn carousel-nav-next"
+              aria-label="Próxima foto"
+            >
+              <ChevronRight size={28} />
+            </button>
+
+            {/* Indicadores de foto */}
+            <div className="photo-indicators">
+              {allPhotos.map((_, index) => (
+                <button
+                  key={index}
+                  className={`photo-indicator ${index === currentPhotoIndex ? 'active' : ''}`}
+                  onClick={() => {/* no futuro abrir modal ou zoom, mas NÃO trocar foto principal */}}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="hero-title-container">
           <h1 className="hero-title">{local.nome_lugar}</h1>
@@ -103,22 +153,42 @@ const DetailsPage = () => {
           <section className="section">
             <div className="section-header">
               <h2 className="section-title">Galeria de Fotos</h2>
-              <button className="see-more-btn">
-                Ver todas
-                <ChevronRight size={18} />
-              </button>
+
             </div>
-            
-            <div className="photos-carousel">
-              {carouselImages.map((img, index) => (
-                <div key={index} className="carousel-item">
-                  <img
-                    src={img}
-                    alt={`${local.nome_lugar} - foto ${index + 2}`}
-                    className="carousel-image"
-                  />
-                </div>
-              ))}
+
+            <div className="gallery-scroll-container">
+              <button className="gallery-scroll-btn gallery-scroll-prev" 
+                onClick={() => {
+                  const box = document.getElementById("gallery-scroll-box");
+                  box.scrollLeft -= 300;
+                }}
+              >
+                <ChevronLeft size={22} />
+              </button>
+
+              <button className="gallery-scroll-btn gallery-scroll-next"
+                onClick={() => {
+                  const box = document.getElementById("gallery-scroll-box");
+                  box.scrollLeft += 300;
+                }}
+              >
+                <ChevronRight size={22} />
+              </button>
+
+              <div id="gallery-scroll-box" className="photos-carousel">
+                {carouselImages.map((img, index) => (
+                  <div 
+                    key={index} 
+                    className="carousel-item"
+                  >
+                    <img
+                      src={img}
+                      alt={`${local.nome_lugar} - foto ${index + 2}`}
+                      className="carousel-image"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         )}

@@ -6,8 +6,10 @@ import WeatherTideWidget from "../components/features/WeatherTideWid";
 import { Compass, Loader2 } from "lucide-react";
 import "../styles/home.css";
 import "../components/common/Carousel.css";
+import { useNavigate } from "react-router-dom";
 
-export default function HomePage() {
+function HomePage() {
+  const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);
   const [lugaresPorCategoria, setLugaresPorCategoria] = useState({});
   const [loading, setLoading] = useState(true);
@@ -74,13 +76,11 @@ export default function HomePage() {
                 </div>
               </div>
 
-
               {temLugares ? (
                 <Carousel 
                   items={lugares.filter(Boolean)} 
                   onItemClick={(lugar) => {
-
-                    console.log('Lugar clicado:', lugar);
+                    navigate(`/detalhes/${lugar._id}`);
                   }}
                 />
               ) : (
@@ -97,3 +97,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+export default HomePage;

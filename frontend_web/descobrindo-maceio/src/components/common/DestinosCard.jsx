@@ -11,6 +11,7 @@ export default function DestinosCard({ destino, onClick }) {
 
   const handleFavoriteClick = (e) => {
     e.stopPropagation();
+
     toggleFavorite(destino);
   };
 
@@ -30,16 +31,19 @@ export default function DestinosCard({ destino, onClick }) {
           alt={destino.nome_local || destino.nome}
           className="destination-image"
         />
-
         <div className="image-overlay"></div>
-
         <div className="hover-overlay">
-          <div className="view-details-btn">
+          <div
+            className="view-details-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/detalhes/${destino._id}`);
+            }}
+          >
             <span>Ver Detalhes</span>
             <ArrowRight size={18} />
           </div>
         </div>
-
         <button
           className="favorite-btn"
           onClick={handleFavoriteClick}
@@ -51,7 +55,6 @@ export default function DestinosCard({ destino, onClick }) {
           />
         </button>
       </div>
-
       <div className="destination-content">
         <h3 className="destination-title">{destino.nome_local || destino.nome}</h3>
       </div>

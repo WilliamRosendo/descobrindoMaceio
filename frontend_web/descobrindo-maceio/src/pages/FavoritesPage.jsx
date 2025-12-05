@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Heart, Sparkles, Loader2 } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 import AppContext from '../context/AppContext';
 import { getAllPlaces } from "../services/place.service";
 import DestinosCard from '../components/common/DestinosCard';
 import PageTitle from '../components/common/PageTitle';
-import { useNavigate } from "react-router-dom";
 import "../styles/favorites.css";
 
 const FavoritesPage = () => {
-  const { favorites, user } = useContext(AppContext);
+  const { favorites, user, loadFavorites, isLoadingFavorites } = useContext(AppContext);
   const [lugares, setLugares] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -21,29 +21,47 @@ const FavoritesPage = () => {
       return;
     }
 
-    const loadPlaces = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
+        
+        await loadFavorites();
+        
         const allPlaces = await getAllPlaces();
+
         setLugares(allPlaces);
       } catch (error) {
-        console.error('Erro ao carregar lugares:', error);
+        console.error('Erro ao carregar dados:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadPlaces();
-  }, [user, navigate]);
+    loadData();
+  }, [user, navigate, loadFavorites]);
 
   const favoriteDestinations = lugares.filter(lugar => {
-    const categoria = lugar.categoria?.nome_categoria || lugar.categoria;
+    const categoriaId = lugar.categoria?._id || lugar.categoria?.$oid || lugar.categoria;
+    
+    const categoriaMap = {
+      "691249111d398fea080b5482": "Praias",
+      "691249581d398fea080b5485": "Passeios Culturais",
+      "691249831d398fea080b5487": "Lazer",
+    };
+    
+    const categoriaNome = categoriaMap[categoriaId];
     const itemId = lugar._id;
 
-    return favorites[categoria]?.includes(itemId);
+    const isFav = categoriaNome && favorites[categoriaNome]?.includes(itemId);
+    
+    if (isFav) {
+      console.log("Favorito encontrado:", lugar.nome_local, "| Categoria:", categoriaNome);
+    }
+    
+    return isFav;
   });
 
-  if (loading) {
+  if (loading || isLoadingFavorites) {
     return (
       <div className="favorites-page">
         <PageTitle title="Meus Favoritos" icon={Heart} />

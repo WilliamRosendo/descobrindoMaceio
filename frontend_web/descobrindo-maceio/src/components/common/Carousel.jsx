@@ -36,11 +36,17 @@ const Carousel = ({ items, onItemClick }) => {
     );
   };
 
-  const visibleItems = items.slice(currentIndex, currentIndex + itemsPerPage);
+  // Garantir que cada item tenha a primeira foto disponível
+  const itemsWithImages = items.map(item => ({
+    ...item,
+    imagem: item.fotos?.[0] || item.imagem || '/placeholder-image.jpg'
+  }));
+
+  const visibleItems = itemsWithImages.slice(currentIndex, currentIndex + itemsPerPage);
 
   const displayItems = [...visibleItems];
-  while (displayItems.length < itemsPerPage && items.length > 0) {
-    displayItems.push(items[displayItems.length % items.length]);
+  while (displayItems.length < itemsPerPage && itemsWithImages.length > 0) {
+    displayItems.push(itemsWithImages[displayItems.length % itemsWithImages.length]);
   }
 
   return (

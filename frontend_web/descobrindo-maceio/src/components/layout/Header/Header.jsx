@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-container">
-        {/* Logo */}
+
         <Link to="/" className="logo-section">
           <div className="logo-icon">
             🌴
@@ -32,7 +32,6 @@ const Header = () => {
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="nav-desktop">
           {navItems.map(({ to, label, icon: Icon }) => (
             <Link
@@ -46,7 +45,6 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="menu-toggle"
