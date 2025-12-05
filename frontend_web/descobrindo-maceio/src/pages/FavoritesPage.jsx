@@ -3,9 +3,9 @@ import { Heart, Sparkles, Loader2 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import AppContext from '../context/AppContext';
 import { getAllPlaces } from "../services/place.service";
-import DestinosCard from '../components/common/DestinosCard';
 import PageTitle from '../components/common/PageTitle';
 import "../styles/favorites.css";
+import FavoriteCard from '../components/common/FavoriteCard';
 
 const FavoritesPage = () => {
   const { favorites, user, loadFavorites, isLoadingFavorites } = useContext(AppContext);
@@ -108,7 +108,7 @@ const FavoritesPage = () => {
 
           <div className="favorites-grid">
             {favoriteDestinations.map(destino => (
-              <DestinosCard key={destino._id} destino={destino} />
+              <FavoriteCard lugar={destino} />
             ))}
           </div>
         </>

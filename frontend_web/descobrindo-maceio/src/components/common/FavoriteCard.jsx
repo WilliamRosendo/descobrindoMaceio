@@ -1,68 +1,56 @@
-import React from 'react';
-import { Heart, MapPin, Navigation } from 'lucide-react';
-import { useFavorites } from "../../hooks/useFavorites";
+import React from "react";
+import { Heart, ArrowRight, MapPin, Navigation } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import './FavoriteCard.css';
+import { useFavorites } from "../../hooks/useFavorites";
+import "./FavoriteCard.css";
 
 export default function FavoriteCard({ lugar }) {
-  const { toggleFavorite } = useFavorites();
   const navigate = useNavigate();
+  const { toggleFavorite, isFavorite } = useFavorites();
 
-  const handleViewMap = (e) => {
-    e.stopPropagation();
-    navigate(`/mapa?lugar=${lugar._id}`);
-  };
-
-  const handleRemoveFavorite = (e) => {
-    e.stopPropagation();
-    toggleFavorite(lugar);
-  };
+  const favorite = isFavorite(lugar);
+  const imageSrc =
+    lugar.imagem ||
+    lugar.fotos?.[0] ||
+    lugar.imagens?.[0] ||
+    "/placeholder-image.jpg";
 
   const handleCardClick = () => {
     navigate(`/detalhes/${lugar._id}`);
   };
 
-  return (
-    <div className="favorite-card" onClick={handleCardClick}>
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    toggleFavorite(lugar);
+  };
 
-      <div className="favorite-image-container">
-        <img
-          src={lugar.imagem}
-          alt={lugar.nome}
-          className="favorite-image"
-        />
-        <div className="image-badge">
-          <Heart size={14} className="badge-icon" />
-        </div>
+  return (
+    <div className="place-card" onClick={handleCardClick}>
+      <div className="place-image-wrapper">
+        <img src={imageSrc} alt={lugar.nome_local || lugar.nome} className="place-image" />
+
+        <div className="image-overlay"></div>
+
+        
+          <div className="hover-overlay">
+            <div className="view-details-btn">
+              <span>Ver Detalhes</span>
+              <ArrowRight size={18} />
+            </div>
+          </div>
+
+        <button className="favorite-btn" onClick={handleFavoriteClick}>
+          <Heart
+            size={20}
+            className={favorite ? "favorite-active" : "favorite-inactive"}
+          />
+        </button>
+
       </div>
 
-      <div className="favorite-content">
-        <h2 className="favorite-title">{lugar.nome}</h2>
-        
-        <div className="favorite-info">
-          <div className="info-item">
-            <MapPin size={16} className="info-icon" />
-            <span className="info-text">{lugar.distancia} km</span>
-          </div>
-        </div>
+      <div className="place-content">
+        <h3 className="place-title">{lugar.nome_local || lugar.nome}</h3>
 
-        <div className="favorite-actions">
-          <button
-            className="action-btn primary"
-            onClick={handleViewMap}
-          >
-            <Navigation size={16} />
-            <span>Ver no Mapa</span>
-          </button>
-
-          <button
-            className="action-btn secondary"
-            onClick={handleRemoveFavorite}
-            aria-label="Remover dos favoritos"
-          >
-            <Heart size={18} className="heart-filled" />
-          </button>
-        </div>
       </div>
     </div>
   );

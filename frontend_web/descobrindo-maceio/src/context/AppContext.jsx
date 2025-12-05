@@ -3,6 +3,7 @@ import React, { createContext, useState, useEffect, useCallback } from "react";
 import { getFavoritos, addFavorito, removeFavorito } from "../services/favoritos.service";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/auth.service.js";
+import { getLocalById } from "../services/locais.service";
 
 const AppContext = createContext();
 export default AppContext;
@@ -18,11 +19,14 @@ export const AppProvider = ({ children }) => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(authService.getCurrentUser());
+
   const [favorites, setFavorites] = useState({
     Praias: [],
     "Passeios Culturais": [],
     Lazer: [],
   });
+
+  const [favoritePlaces, setFavoritePlaces] = useState([]);
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(false);
 
   const loadFavorites = useCallback(async () => {
@@ -33,10 +37,8 @@ export const AppProvider = ({ children }) => {
 
     try {
       setIsLoadingFavorites(true);
-      console.log("Carregando favoritos do banco...");
       const data = await getFavoritos();
       const newFavorites = data.categorias || { Praias: [], "Passeios Culturais": [], Lazer: [] };
-      
       setFavorites(newFavorites);
     } catch (err) {
       console.error("Erro ao carregar favoritos:", err);
@@ -52,6 +54,32 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     loadFavorites();
   }, [loadFavorites]);
+
+  const loadFavoritePlaces = useCallback(async () => {
+    try {
+      const categorias = Object.keys(favorites);
+      const resultados = [];
+
+      for (const cat of categorias) {
+        for (const id of favorites[cat]) {
+          try {
+            const res = await getLocalById(id);
+            resultados.push(res.data);
+          } catch {
+            console.warn("Erro ao buscar lugar favorito por ID:", id);
+          }
+        }
+      }
+
+      setFavoritePlaces(resultados);
+    } catch (err) {
+      console.error("Erro ao carregar lugares favoritos completos", err);
+    }
+  }, [favorites]);
+
+  useEffect(() => {
+    if (user) loadFavoritePlaces();
+  }, [favorites, user, loadFavoritePlaces]);
 
   const toggleFavorite = async (lugar) => {
     if (!user) {
@@ -71,11 +99,9 @@ export const AppProvider = ({ children }) => {
 
     try {
       const isFav = favorites[categoria]?.includes(itemId);
-
       let newFavorites;
 
       if (isFav) {
-
         await removeFavorito(categoria, itemId);
         newFavorites = {
           ...favorites,
@@ -112,22 +138,26 @@ export const AppProvider = ({ children }) => {
     authService.logout();
     setUser(null);
     setFavorites({ Praias: [], "Passeios Culturais": [], Lazer: [] });
+    setFavoritePlaces([]);
   };
 
   return (
-    <AppContext.Provider value={{ 
-      user, 
-      setUser, 
-      favorites, 
-      setFavorites, 
-      toggleFavorite, 
-      isFavorite, 
-      logout, 
-      menuOpen, 
-      setMenuOpen,
-      isLoadingFavorites,
-      loadFavorites
-    }}>
+    <AppContext.Provider
+      value={{
+        user,
+        setUser,
+        favorites,
+        favoritePlaces,
+        isLoadingFavorites,
+        toggleFavorite,
+        isFavorite,
+        loadFavorites,
+        loadFavoritePlaces,
+        logout,
+        menuOpen,
+        setMenuOpen,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

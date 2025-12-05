@@ -7,9 +7,9 @@ const Carousel = ({ items, onItemClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const getItemsPerPage = () => {
-    if (window.innerWidth >= 1280) return 4; // xl
-    if (window.innerWidth >= 1024) return 3; // lg
-    if (window.innerWidth >= 640) return 2;  // sm
+    if (window.innerWidth >= 1280) return 4; 
+    if (window.innerWidth >= 1024) return 3; 
+    if (window.innerWidth >= 640) return 2; 
     return 1;
   };
 
@@ -36,7 +36,6 @@ const Carousel = ({ items, onItemClick }) => {
     );
   };
 
-  // Garantir que cada item tenha a primeira foto disponível
   const itemsWithImages = items.map(item => ({
     ...item,
     imagem: item.fotos?.[0] || item.imagem || '/placeholder-image.jpg'
