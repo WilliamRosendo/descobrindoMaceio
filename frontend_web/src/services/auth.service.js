@@ -1,24 +1,4 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api';
-
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+import { api } from "./api.js";
 
 export const authService = {
   login: async (email, senha) => {
@@ -26,7 +6,7 @@ export const authService = {
       const response = await api.post('/usuarios/login', { email, senha });
 
       const token = response.data.token;
-      const user = response.data.usuario; // backend retorna 'usuario'
+      const user = response.data.usuario;
 
       if (token) {
         localStorage.setItem('token', token);
@@ -44,6 +24,15 @@ export const authService = {
 
     } catch (error) {
       throw error.response?.data || { error: "Erro ao fazer login" };
+    }
+  },
+
+  register: async (nome, email, senha) => {
+    try {
+      const response = await api.post('/usuarios', { nome, email, senha });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: 'Erro ao criar conta' };
     }
   },
 
