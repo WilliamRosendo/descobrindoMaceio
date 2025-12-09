@@ -1,11 +1,9 @@
-/* DetailsPage Styles */
 .details-page {
   min-height: 100vh;
   background: #f9fafb;
   padding-top: 2rem; /* Espaço entre header e foto principal */
 }
 
-/* Loading & Error States */
 .details-loading,
 .details-error {
   display: flex;
@@ -42,7 +40,6 @@
   background: #2563eb;
 }
 
-/* Hero Image Section - AJUSTADO */
 .hero-image-container {
   position: relative;
   width: 100%;
@@ -50,7 +47,7 @@
   margin: 0 auto;
   height: 28rem;
   overflow: hidden;
-  border-radius: 1rem; /* Bordas arredondadas em todos os lados */
+  border-radius: 1rem; 
 }
 
 .hero-image {
@@ -68,7 +65,6 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2), transparent);
 }
 
-/* Floating Buttons */
 .floating-btn {
   position: absolute;
   z-index: 10;
@@ -120,7 +116,6 @@
   color: #ef4444;
 }
 
-/* Hero Title */
 .hero-title-container {
   position: absolute;
   bottom: 0;
@@ -139,7 +134,6 @@
   text-transform: uppercase;
 }
 
-/* Content Container */
 .content-container {
   max-width: 72rem;
   margin: 0 auto;
@@ -149,7 +143,6 @@
   gap: 3rem;
 }
 
-/* Section */
 .section {
   display: flex;
   flex-direction: column;
@@ -205,7 +198,6 @@
   transform: translateX(4px);
 }
 
-/* Photos Carousel */
 .photos-carousel {
   display: flex;
   gap: 1rem;
@@ -281,7 +273,6 @@
   font-weight: 500;
 }
 
-/* Modal de Galeria */
 .gallery-modal {
   position: fixed;
   top: 0;
@@ -445,7 +436,6 @@
   border: 1px solid #f3f4f6;
 }
 
-/* Map */
 .map-container {
   width: 100%;
   height: 24rem;
@@ -623,7 +613,6 @@
     font-size: 0.875rem;
   }
 
-  /* Modal de galeria mobile */
   .gallery-close-btn {
     top: 1rem;
     right: 1rem;

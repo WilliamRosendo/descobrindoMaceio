@@ -89,7 +89,7 @@ const DetailsPage = () => {
       <div className="hero-image-container">
         <img
           src={allPhotos[currentPhotoIndex]}
-          alt={`${local.nome_lugar} - foto ${currentPhotoIndex + 1}`}
+          alt={`${local.nome_local} - foto ${currentPhotoIndex + 1}`}
           className="hero-image"
         />
         
@@ -129,7 +129,6 @@ const DetailsPage = () => {
               <ChevronRight size={28} />
             </button>
 
-            {/* Indicadores de foto */}
             <div className="photo-indicators">
               {allPhotos.map((_, index) => (
                 <button
@@ -143,7 +142,7 @@ const DetailsPage = () => {
         )}
 
         <div className="hero-title-container">
-          <h1 className="hero-title">{local.nome_lugar}</h1>
+          <h1 className="hero-title">{local.nome_local}</h1>
         </div>
       </div>
 
@@ -183,7 +182,7 @@ const DetailsPage = () => {
                   >
                     <img
                       src={img}
-                      alt={`${local.nome_lugar} - foto ${index + 2}`}
+                      alt={`${local.nome_local} - foto ${index + 2}`}
                       className="carousel-image"
                     />
                   </div>
@@ -216,7 +215,7 @@ const DetailsPage = () => {
               >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <Marker position={[latitude, longitude]}>
-                  <Popup>{local.nome_lugar}</Popup>
+                  <Popup>{local.nome_local}</Popup>
                 </Marker>
               </MapContainer>
             </div>
