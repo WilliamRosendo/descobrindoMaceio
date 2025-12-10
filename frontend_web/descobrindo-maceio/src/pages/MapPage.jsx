@@ -68,9 +68,17 @@ const MapPage = () => {
     });
   }, [places, userLocation]);
 
-  const filteredPlaces = placesWithDistance.filter(
-    (p) => p.categoria.nome_categoria === categoryMap[category]
-  );
+  const filteredPlaces = useMemo(() => {
+    const filtered = placesWithDistance.filter(
+      (p) => p.categoria.nome_categoria === categoryMap[category]
+    );
+
+    return filtered.sort((a, b) => {
+      if (a.distanceKm === null || b.distanceKm === null) return 0;
+      return a.distanceKm - b.distanceKm;
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placesWithDistance, category]);
 
   const handleCategoryChange = (cat) => {
     setCategory(cat);
@@ -100,7 +108,7 @@ const MapPage = () => {
             </p>
 
             <p className="place-card-info place-card-time">
-              Tempo estimado: {place.tempoMin} min
+              Tempo estimado de carro: {place.tempoMin} min
             </p>
           </div>
         ))}

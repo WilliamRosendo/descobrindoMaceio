@@ -9,7 +9,7 @@ export const calcularDistanciaKm = (userCoords, lugarCoords) => {
 };
 
 export const calcularTempo = (distanciaKm) => {
-  const velocidadeMedia = 40;
+  const velocidadeMedia = 20;
   const horas = distanciaKm / velocidadeMedia;
   return Math.round(horas * 60);
 };
